@@ -53,20 +53,32 @@ def DropTable(name):
 	conn.commit()
 	conn.close()
 
-# name: name of database to be inserted into
+# name: name of table to be inserted into
 # tuple: list of attributes of new item
 def Insert(name, tuple):
 	conn = sqlite3.connect(ratingsDB)
 	c = conn.cursor()
 	
 	# Constructs INSERT INTO command
-	insertinto = 'INSERT INTO '
+	insertinto = 'INSERT INTO %s VALUES (\'' % name
+	for i in range(len(tuple)):
+		insertinto += tuple[i]
+		insertinto += '\''
+		if i != len(tuple)-1:
+			insertinto += ', \''
+		else:
+			insertinto += ')'
+	c.execute(insertinto)
+	conn.commit()
+	conn.close()
+	
 	
 def main():
 	DropTable('test')
 	DropTable('test1')
 	CreateTable('test',['cat1','cat2','cat3'])
 	CreateTable('test1',['cat1','cat2'])
+	Insert('test1',['garbage','moregarbage'])
 	print(CheckTableNamed('test'))
 	print(CheckTableNamed('test2')) 
 
