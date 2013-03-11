@@ -24,9 +24,9 @@ def CheckTableNamed(name):
 	else:
 		return False
 
-# Assume all potential inputs are sanitized		
+# Assume all potential inputs are sanitized, table doesn't already exist	
 # Name (string): Table name (no spaces or special characters, is used to name table
-# Categories (list of strings): List of categories for table
+# Categories (list of strings): List of categories for table. Has at least one category. All categories will be strings.
 def CreateTable(name, categories):
 	conn = sqlite3.connect(ratingsDB)
 	c = conn.cursor()
@@ -34,13 +34,13 @@ def CreateTable(name, categories):
 	# Constructs CREATE TABLE command
 	newtable = 'CREATE TABLE '
 	newtable += name+' ('
+	newtable += 'ID int, ' # This ID number will be automatically assigned upon insertion.
 	for i in range(len(categories)):
 		newtable += categories[i]
 		newtable += ' text'
-		if i != len(categories)-1:
-			newtable += ', '
-		else:
-			newtable += ')'
+		newtable += ', '
+	# Put categories for stars and comments here
+	newtable += 'STARS real, COMMENTS text)'
 	c.execute(newtable)
 	conn.commit()
 	conn.close()
@@ -71,7 +71,6 @@ def Insert(name, tuple):
 	c.execute(insertinto)
 	conn.commit()
 	conn.close()
-	
 	
 def main():
 	DropTable('test')
