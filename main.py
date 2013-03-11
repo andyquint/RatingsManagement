@@ -34,13 +34,12 @@ def CreateTable(name, categories):
 	# Constructs CREATE TABLE command
 	newtable = 'CREATE TABLE '
 	newtable += name+' ('
-	newtable += 'ID int, ' # This ID number will be automatically assigned upon insertion.
+	newtable += 'ID int primary key, ' # This ID number will be automatically assigned upon insertion.
 	for i in range(len(categories)):
 		newtable += categories[i]
 		newtable += ' text'
 		newtable += ', '
-	# Put categories for stars and comments here
-	newtable += 'STARS real, COMMENTS text)'
+	newtable += 'STARS real, COMMENTS text)' # Creates categories for stars rating and comments
 	c.execute(newtable)
 	conn.commit()
 	conn.close()
@@ -53,19 +52,20 @@ def DropTable(name):
 	conn.commit()
 	conn.close()
 
+# Generates ID number as the highest ID in the table incremented by 1
 # name: name of table to be inserted into
-# tuple: list of attributes of new item
+# tuple: list of attributes of new item. Assumes strings are surrounded
+#	by escaped apostrophes (')
 def Insert(name, tuple):
 	conn = sqlite3.connect(ratingsDB)
 	c = conn.cursor()
 	
 	# Constructs INSERT INTO command
-	insertinto = 'INSERT INTO %s VALUES (\'' % name
+	insertinto = 'INSERT INTO %s VALUES (null,' % name
 	for i in range(len(tuple)):
-		insertinto += tuple[i]
-		insertinto += '\''
+		insertinto += '%s' % tuple[i]
 		if i != len(tuple)-1:
-			insertinto += ', \''
+			insertinto += ', '
 		else:
 			insertinto += ')'
 	c.execute(insertinto)
@@ -76,8 +76,8 @@ def main():
 	DropTable('test')
 	DropTable('test1')
 	CreateTable('test',['cat1','cat2','cat3'])
-	CreateTable('test1',['cat1','cat2'])
-	Insert('test1',['garbage','moregarbage'])
+	CreateTable('test1',['cat1'])
+	Insert('test1',['\'joe shmoe\'', '3', '\'meh.\''])
 	print(CheckTableNamed('test'))
 	print(CheckTableNamed('test2')) 
 
