@@ -23,6 +23,16 @@ def CheckTableNamed(name):
 		return True
 	else:
 		return False
+		
+# Returns a list containing the names of all the tables
+def ListTableNames():
+	conn = sqlite3.connect(ratingsDB)
+	c = conn.cursor()
+	c.execute("SELECT name FROM sqlite_master WHERE type='table'")
+	names = []
+	for n in c.fetchall():
+		names.append(n[0])
+	return names
 
 # Assume all potential inputs are sanitized, table doesn't already exist	
 # Name (string): Table name (no spaces or special characters, is used to name table
@@ -44,7 +54,8 @@ def CreateTable(name, categories):
 	conn.commit()
 	conn.close()
 
-# name: Database to be deleted
+# Drops table matching name
+# name: Table to be dropped
 def DropTable(name):
 	conn = sqlite3.connect(ratingsDB)
 	c = conn.cursor()
@@ -83,7 +94,7 @@ def Delete(name, delID):
 	
 	c.execute(delete)
 	conn.commit()
-	conn.close()
+	conn.close() 
 	
 def main():
 	DropTable('test')
@@ -101,6 +112,7 @@ def main():
 	print(c.fetchall())
 	print(CheckTableNamed('test'))
 	print(CheckTableNamed('test2')) 
+	print(ListTableNames())
 
 if __name__ == '__main__':
 	main()
