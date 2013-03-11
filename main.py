@@ -34,7 +34,7 @@ def CreateTable(name, categories):
 	# Constructs CREATE TABLE command
 	newtable = 'CREATE TABLE '
 	newtable += name+' ('
-	newtable += 'ID int primary key, ' # This ID number will be automatically assigned upon insertion.
+	newtable += 'ID integer primary key, ' # This ID number will be automatically assigned upon insertion.
 	for i in range(len(categories)):
 		newtable += categories[i]
 		newtable += ' text'
@@ -72,12 +72,33 @@ def Insert(name, tuple):
 	conn.commit()
 	conn.close()
 	
+# Deletes row with id matching delID
+# name: name of table to delete from
+# delID: ID of row to delete
+def Delete(name, delID):
+	conn = sqlite3.connect(ratingsDB)
+	c = conn.cursor()
+	
+	delete = 'DELETE FROM %s WHERE ID=%d' % (name, delID)
+	
+	c.execute(delete)
+	conn.commit()
+	conn.close()
+	
 def main():
 	DropTable('test')
 	DropTable('test1')
 	CreateTable('test',['cat1','cat2','cat3'])
 	CreateTable('test1',['cat1'])
 	Insert('test1',['\'joe shmoe\'', '3', '\'meh.\''])
+	Insert('test1',['\'joe shmoe\'', '4', '\'okay.\''])
+	conn=sqlite3.connect(ratingsDB)
+	c=conn.cursor()
+	c.execute('SELECT * FROM test1')
+	print(c.fetchall())
+	Delete('test1',1)
+	c.execute('SELECT * FROM test1')
+	print(c.fetchall())
 	print(CheckTableNamed('test'))
 	print(CheckTableNamed('test2')) 
 
