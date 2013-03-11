@@ -5,17 +5,17 @@ import os, glob, sqlite3
 
 # If no databases, return false.
 # If there are databases, return list of database names
-def CheckDatabases():
-	databaselist = glob.glob('*.db')
-	if (not databaselist):
+def CheckDatabase():
+	database = glob.glob('ratings.db')
+	if (not database):
 		return False
 	else:
-		return databaselist
+		return True
 
 # Assume all potential inputs are sanitized		
-# Name (string): Database name (no spaces, special characters, is used to name database file
-# Categories (list of strings): List of categories for database
-def CreateNewDatabase(name, categories):
+# Name (string): Table name (no spaces or special characters, is used to name table
+# Categories (list of strings): List of categories for table
+def CreateTable(name, categories):
 	conn = sqlite3.connect(name + '.db')
 	c = conn.cursor()
 	
@@ -32,14 +32,20 @@ def CreateNewDatabase(name, categories):
 	conn.close()
 
 # name: Database to be deleted
-def DeleteDatabase(name):
+def DropTable(name):
 	os.remove(name+'.db')
 
-# 
-def InsertIntoTable(name
+# name: name of database to be inserted into
+# tuple: list of attributes of new item
+def Insert(name, tuple):
+	conn = sqlite3.connect(name+'.db')
+	c = conn.cursor()
+	
+	# Constructs INSERT INTO command
+	insertinto = 'INSERT INTO ' + 
 	
 def main():
-	CreateNewDatabase('test', ['cat1', 'cat2', 'cat3'])
+	CreateTable('test', ['cat1', 'cat2', 'cat3'])
 	l = CheckDatabases()
 	print(l)
 	DeleteDatabase('test')
