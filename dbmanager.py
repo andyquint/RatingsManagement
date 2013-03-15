@@ -119,18 +119,4 @@ def Delete(name, delID):
 	
 	c.execute(delete)
 	conn.commit()
-	conn.close() 
-	
-def main():
-	DropTable('test')
-	DropTable('test1')
-	CreateTable('test',['cat1','cat2','cat3'])
-	CreateTable('test1',['cat1'])
-	Insert('test1',['\'joe shmoe\'', '3', '\'meh.\''])
-	Insert('test1',['\'joe shmoe\'', '4', '\'okay.\''])
-	Insert('test1',['\'john doe\'', '2', '\'not bad.\''])
-	# print(Select('test1','cat1','\'joe shmoe\''))
-	print(ListTableCategories('test'))
-
-if __name__ == '__main__':
-	main()
+	conn.close()
