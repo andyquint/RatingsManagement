@@ -33,6 +33,18 @@ def ListTableNames():
 	for n in c.fetchall():
 		names.append(n[0])
 	return names
+	
+# Returns a list containing all the categories in the table
+# name: name of table
+def ListTableCategories(name):
+	conn = sqlite3.connect(ratingsDB)
+	c = conn.cursor()
+	c.execute('PRAGMA table_info(%s)' % name)
+	
+	l = []
+	for t in c.fetchall():
+		l.append(t[1])
+	return l
 
 # Assume all potential inputs are sanitized, table doesn't already exist	
 # Name (string): Table name (no spaces or special characters, is used to name table
@@ -83,6 +95,19 @@ def Insert(name, tuple):
 	conn.commit()
 	conn.close()
 	
+# Returns list of items matching selection criteria
+# name: name of table to be selected from
+# category: category that is being matched
+# key: search key
+def Select(name, category, key):
+	conn = sqlite3.connect(ratingsDB)
+	c = conn.cursor()
+	
+	select = 'SELECT * FROM %s WHERE %s=%s' % (name, category, key)
+	
+	c.execute(select)
+	return c.fetchall()
+	
 # Deletes row with id matching delID
 # name: name of table to delete from
 # delID: ID of row to delete
@@ -103,16 +128,9 @@ def main():
 	CreateTable('test1',['cat1'])
 	Insert('test1',['\'joe shmoe\'', '3', '\'meh.\''])
 	Insert('test1',['\'joe shmoe\'', '4', '\'okay.\''])
-	conn=sqlite3.connect(ratingsDB)
-	c=conn.cursor()
-	c.execute('SELECT * FROM test1')
-	print(c.fetchall())
-	Delete('test1',1)
-	c.execute('SELECT * FROM test1')
-	print(c.fetchall())
-	print(CheckTableNamed('test'))
-	print(CheckTableNamed('test2')) 
-	print(ListTableNames())
+	Insert('test1',['\'john doe\'', '2', '\'not bad.\''])
+	# print(Select('test1','cat1','\'joe shmoe\''))
+	print(ListTableCategories('test'))
 
 if __name__ == '__main__':
 	main()
